@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список клиентов</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Список клиентов</h2>
+    <div class="mb-3">
+        <a class="btn btn-primary" th:href="@{/clients/create}">Создать клиента</a>
+        <a class="btn btn-secondary" th:href="@{/orders}">Заказы</a>
+        <a class="btn btn-secondary" th:href="@{/devices}">Устройства</a>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.firstName}"></td>
+            <td th:text="${client.lastName}"></td>
+            <td th:text="${client.phone}"></td>
+            <td th:text="${client.email}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

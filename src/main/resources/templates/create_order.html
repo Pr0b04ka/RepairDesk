@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать заказ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Создать заказ</h2>
+    <form th:action="@{/orders/create}" th:object="${order}" method="post">
+        <div class="mb-3">
+            <label>Жалоба</label>
+            <input type="text" th:field="*{complaint}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Диагностика</label>
+            <input type="text" th:field="*{diagnosticsResult}" class="form-control">
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" th:field="*{repairApproved}" class="form-check-input">
+            <label class="form-check-label">Ремонт одобрен</label>
+        </div>
+
+        <div class="mb-3">
+            <label>Стоимость запчастей</label>
+            <input type="number" th:field="*{partsCost}" class="form-control" step="0.01">
+        </div>
+
+        <div class="mb-3">
+            <label>Стоимость работы</label>
+            <input type="number" th:field="*{laborCost}" class="form-control" step="0.01">
+        </div>
+
+        <div class="mb-3">
+            <label>Время затрачено (ч)</label>
+            <input type="number" th:field="*{timeSpentHours}" class="form-control" step="0.1">
+        </div>
+
+        <div class="mb-3">
+            <label>Итоговый результат</label>
+            <input type="text" th:field="*{finalSummary}" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label>Клиент</label>
+            <select th:field="*{clientId}" class="form-select">
+                <option th:each="c : ${clients}" th:value="${c.id}" th:text="${c.firstName} + ' ' + ${c.lastName}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Устройство</label>
+            <select th:field="*{deviceId}" class="form-select">
+                <option th:each="d : ${devices}" th:value="${d.id}" th:text="${d.brand} + ' ' + ${d.model}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success">Создать</button>
+        <a class="btn btn-secondary" th:href="@{/orders}">Назад</a>
+    </form>
+</div>
+</body>
+</html>

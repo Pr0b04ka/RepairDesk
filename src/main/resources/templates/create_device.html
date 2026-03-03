@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать устройство</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Создать устройство</h2>
+    <form th:action="@{/devices/create}" th:object="${device}" method="post">
+        <div class="mb-3">
+            <label>Бренд</label>
+            <input type="text" th:field="*{brand}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Модель</label>
+            <input type="text" th:field="*{model}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Тип</label>
+            <input type="text" th:field="*{type}" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Создать</button>
+        <a class="btn btn-secondary" th:href="@{/devices}">Назад</a>
+    </form>
+</div>
+</body>
+</html>
