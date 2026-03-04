@@ -23,9 +23,10 @@
             <th>Диагностика</th>
             <th>Ремонт одобрен</th>
             <th>Время (ч)</th>
-            <th>Итоговый результат</th>
+            <th>Краткий итог</th>
             <th>Стоимость</th>
             <th>Статус</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
@@ -36,10 +37,22 @@
             <td th:text="${order.complaint}"></td>
             <td th:text="${order.diagnosticsResult}"></td>
             <td th:text="${order.repairApproved} ? 'Да' : 'Нет'"></td>
-            <td th:text="${order.timeSpent}"></td>
+            <td th:text="${order.timeSpentHours}"></td>
             <td th:text="${order.finalSummary}"></td>
             <td th:text="${order.finalPrice}"></td>
             <td th:text="${order.status}"></td>
+            <td>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{/orders/edit/{id}(id=${order.id})}">
+                    Редактировать
+                </a>
+
+                <a class="btn btn-sm btn-danger"
+                   th:href="@{/orders/delete/{id}(id=${order.id})}"
+                   onclick="return confirm('Удалить заказ?');">
+                    Удалить
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

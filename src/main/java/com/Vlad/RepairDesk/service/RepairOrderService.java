@@ -42,7 +42,8 @@ public class RepairOrderService {
         order.setCreatedAt(LocalDateTime.now());
         order.setClient(client);
         order.setDevice(device);
-        applyBusinessLogic(order);
+        order.setStatus(RepairOrder.Status.NEW);
+        getFinalPrice(order);
 
         RepairOrder saved = repairOrderRepository.save(order);
 
@@ -62,6 +63,30 @@ public class RepairOrderService {
         RepairOrder order = repairOrderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("RepairOrder not found"));
         return mapToResponseDTO(order);
+    }
+
+    public RepairOrderRequestDTO getByIdForEdit(Long id) {
+
+        RepairOrder order = repairOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        RepairOrderRequestDTO dto = new RepairOrderRequestDTO();
+
+        dto.setId(order.getId());
+
+        dto.setClientId(order.getClient().getId());
+        dto.setDeviceId(order.getDevice().getId());
+
+        dto.setComplaint(order.getComplaint());
+        dto.setDiagnosticsResult(order.getDiagnosticsResult());
+        dto.setRepairApproved(order.getRepairApproved());
+        dto.setPartsCost(order.getPartsCost());
+        dto.setLaborCost(order.getLaborCost());
+        dto.setFinalSummary(order.getFinalSummary());
+        dto.setTimeSpentHours(order.getTimeSpentHours());
+        dto.setStatus(order.getStatus());
+
+        return dto;
     }
 
     //UPDATE
@@ -84,7 +109,8 @@ public class RepairOrderService {
         order.setTimeSpentHours(request.getTimeSpentHours());
         order.setClient(client);
         order.setDevice(device);
-        applyBusinessLogic(order);
+        getFinalPrice(order);
+        order.setStatus(determineStatus(order));
 
         RepairOrder updated = repairOrderRepository.save(order);
 
@@ -96,21 +122,31 @@ public class RepairOrderService {
         repairOrderRepository.deleteById(id);
     }
 
-    private void applyBusinessLogic(RepairOrder order) {
-        if (Boolean.FALSE.equals(order.getRepairApproved())) {
-            order.setFinalPrice(0.0);
-            order.setStatus(RepairOrder.Status.CANCELED);
-        } else {
-            // finalPrice = partsCost + laborCost
-            double parts = order.getPartsCost() != null ? order.getPartsCost() : 0;
-            double labor = order.getLaborCost() != null ? order.getLaborCost() : 0;
-            order.setFinalPrice(parts + labor);
+    private RepairOrder.Status determineStatus(RepairOrder order) {
 
-            // если статус ещё не задан, по умолчанию NEW
-            if (order.getStatus() == null) {
-                order.setStatus(RepairOrder.Status.NEW);
-            }
+        if (!order.getFinalSummary().isBlank() && order.getTimeSpentHours() != null && order.getLaborCost() != null && order.getPartsCost() != null && order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+            return RepairOrder.Status.COMPLETED;
         }
+
+        if (order.getPartsCost() != null && order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+            return RepairOrder.Status.REPAIRING;
+        }
+
+        if (order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+            return RepairOrder.Status.WAITING_PARTS;
+        }
+
+        if (order.getDiagnosticsResult() != null && !order.getDiagnosticsResult().isBlank() && !order.getRepairApproved()) {
+            return RepairOrder.Status.CANCELED;
+        }
+
+        return RepairOrder.Status.DIAGNOSING;
+    }
+
+    private void getFinalPrice(RepairOrder order) {
+        double parts = order.getPartsCost() != null ? order.getPartsCost() : 0;
+        double labor = order.getLaborCost() != null ? order.getLaborCost() : 0;
+        order.setFinalPrice(parts + labor);
     }
 
     //Entity -> ResponseDTO
@@ -123,6 +159,9 @@ public class RepairOrderService {
         dto.setPartsCost(order.getPartsCost());
         dto.setLaborCost(order.getLaborCost());
         dto.setFinalPrice(order.getFinalPrice());
+        dto.setFinalSummary(order.getFinalSummary());
+        dto.setTimeSpentHours(order.getTimeSpentHours());
+        dto.setStatus(order.getStatus());
         dto.setCreatedAt(order.getCreatedAt());
 
         //client data

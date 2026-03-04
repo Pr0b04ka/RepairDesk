@@ -11,27 +11,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 public class RepairOrderResponseDTO {
-
     private Long id;
-
     private String complaint;
-
     private String diagnosticsResult;
-
     private Boolean repairApproved;
-
     private Double partsCost;
-
     private Double laborCost;
-
     private Double finalPrice;
-
     private String finalSummary;
-
     private Double timeSpentHours;
-
     private LocalDateTime createdAt;
-
     private RepairOrder.Status status;
 
     private String clientFirstName;

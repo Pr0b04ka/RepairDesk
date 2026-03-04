@@ -57,10 +57,18 @@ public class DeviceService {
 
     // DELETE
     public void delete(Long id) {
-        deviceRepository.deleteById(id);
+
+        Device device = deviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Device not found"));
+
+        if (device.getRepairOrders() != null && !device.getRepairOrders().isEmpty()) {
+            throw new IllegalStateException("Нельзя удалить устройство: есть связанные заказы");
+        }
+
+        deviceRepository.delete(device);
     }
 
-    // Маппинг
+    // Mapping
     private DeviceResponseDTO mapToResponseDTO(Device device) {
         DeviceResponseDTO dto = new DeviceResponseDTO();
         dto.setId(device.getId());

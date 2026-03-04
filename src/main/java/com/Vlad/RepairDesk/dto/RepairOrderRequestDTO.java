@@ -11,26 +11,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 public class RepairOrderRequestDTO {
-
+    private Long id;
     private String complaint;
-
     private String diagnosticsResult;
-
     private Boolean repairApproved;
-
     private Double partsCost;
-
     private Double laborCost;
-
     private Double finalPrice;
-
     private String finalSummary;
-
     private Double timeSpentHours;
-
     private RepairOrder.Status status;
-
     private Long clientId;
-
     private Long deviceId;
 }

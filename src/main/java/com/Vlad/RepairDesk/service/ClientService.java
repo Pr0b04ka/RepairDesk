@@ -59,10 +59,18 @@ public class ClientService {
 
     // DELETE
     public void delete(Long id) {
-        clientRepository.deleteById(id);
+
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+
+        if (client.getRepairOrders() != null && !client.getRepairOrders().isEmpty()) {
+            throw new IllegalStateException("Нельзя удалить клиента: у него есть заказы");
+        }
+
+        clientRepository.delete(client);
     }
 
-    // Маппинг
+    // Mapping
     private ClientResponseDTO mapToResponseDTO(Client client) {
         ClientResponseDTO dto = new ClientResponseDTO();
         dto.setId(client.getId());

@@ -7,8 +7,8 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h2>Создать заказ</h2>
-    <form th:action="@{/orders/create}" th:object="${order}" method="post">
+    <h2>Изменить заказ</h2>
+    <form th:action="@{/orders/edit/{id}(id=${order.id})}" th:object="${order}" method="post">
         <div class="mb-3">
             <label>Жалоба</label>
             <input type="text" th:field="*{complaint}" class="form-control" required>
@@ -58,7 +58,7 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-success">Создать</button>
+        <button class="btn btn-success mt-2">Сохранить</button>
         <a class="btn btn-secondary" th:href="@{/orders}">Назад</a>
     </form>
 </div>
