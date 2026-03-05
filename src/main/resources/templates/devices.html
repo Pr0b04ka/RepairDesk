@@ -2,37 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Список устройств</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Устройства — RepairDesk</title>
 </head>
-<body>
-<div class="container mt-4">
-    <h2>Список устройств</h2>
-    <div class="mb-3">
-        <a class="btn btn-primary" th:href="@{/devices/create}">Создать устройство</a>
-        <a class="btn btn-secondary" th:href="@{/orders}">Заказы</a>
-        <a class="btn btn-secondary" th:href="@{/clients}">Клиенты</a>
+<body th:replace="~{layout :: layout('Устройства — RepairDesk', ~{::section})}">
+
+<section>
+<div class="topbar">
+    <div class="page-title">▣ Устройства</div>
+</div>
+
+<div class="page-content">
+
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <div class="toolbar">
+        <a class="btn btn-primary" th:href="@{/devices/create}">+ Новое устройство</a>
     </div>
 
-    <div th:if="${errorMessage}" class="alert alert-danger">
-        <span th:text="${errorMessage}"></span>
-    </div>
-
-    <div th:if="${successMessage}" class="alert alert-success">
-        <span th:text="${successMessage}"></span>
-    </div>
-
-    <script>
-        setTimeout(function() {
-            let alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => alert.style.display = 'none');
-        }, 2000);
-    </script>
-
-    <table class="table table-striped table-bordered">
+    <table class="rd-table">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>#</th>
             <th>Бренд</th>
             <th>Модель</th>
             <th>Тип</th>
@@ -40,26 +31,27 @@
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${#lists.isEmpty(devices)}">
+            <td colspan="5" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
+                Нет устройств. <a th:href="@{/devices/create}" style="color:var(--accent);">Добавить первое →</a>
+            </td>
+        </tr>
         <tr th:each="device : ${devices}">
-            <td th:text="${device.id}"></td>
+            <td style="font-family:'IBM Plex Mono',monospace; color:var(--muted);" th:text="${device.id}"></td>
             <td th:text="${device.brand}"></td>
             <td th:text="${device.model}"></td>
-            <td th:text="${device.type}"></td>
+            <td style="color:var(--muted);" th:text="${device.type}"></td>
             <td>
-                <a class="btn btn-sm btn-warning"
-                   th:href="@{/devices/edit/{id}(id=${device.id})}">
-                    Редактировать
-                </a>
-
+                <a class="btn btn-sm btn-warning" th:href="@{/devices/edit/{id}(id=${device.id})}">Изменить</a>
                 <a class="btn btn-sm btn-danger"
                    th:href="@{/devices/delete/{id}(id=${device.id})}"
-                   onclick="return confirm('Удалить устройство?');">
-                    Удалить
-                </a>
+                   onclick="return confirm('Удалить устройство?');">Удалить</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+</section>
+
 </body>
 </html>

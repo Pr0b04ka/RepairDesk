@@ -3,6 +3,7 @@ package com.Vlad.RepairDesk.service;
 import com.Vlad.RepairDesk.dto.ClientRequestDTO;
 import com.Vlad.RepairDesk.dto.ClientResponseDTO;
 import com.Vlad.RepairDesk.model.Client;
+import com.Vlad.RepairDesk.model.User;
 import com.Vlad.RepairDesk.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,23 +15,31 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ClientService {
 
+    private final CurrentUserService currentUserService;
     private final ClientRepository clientRepository;
 
     // CREATE
     public ClientResponseDTO create(ClientRequestDTO request) {
+
+        User user = currentUserService.getCurrentUser();
+
         Client client = new Client();
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());
         client.setPhone(request.getPhone());
         client.setEmail(request.getEmail());
+        client.setUser(user);
 
         Client saved = clientRepository.save(client);
+
         return mapToResponseDTO(saved);
     }
 
     // GET ALL
     public List<ClientResponseDTO> getAll() {
-        return clientRepository.findAll()
+        User user = currentUserService.getCurrentUser();
+
+        return clientRepository.findByUser(user)
                 .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());

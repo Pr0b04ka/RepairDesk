@@ -29,4 +29,8 @@ public class Device {
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
     private List<RepairOrder> repairOrders;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

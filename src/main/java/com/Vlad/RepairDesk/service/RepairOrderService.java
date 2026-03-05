@@ -5,6 +5,7 @@ import com.Vlad.RepairDesk.dto.RepairOrderResponseDTO;
 import com.Vlad.RepairDesk.model.Client;
 import com.Vlad.RepairDesk.model.Device;
 import com.Vlad.RepairDesk.model.RepairOrder;
+import com.Vlad.RepairDesk.model.User;
 import com.Vlad.RepairDesk.repository.ClientRepository;
 import com.Vlad.RepairDesk.repository.DeviceRepository;
 import com.Vlad.RepairDesk.repository.RepairOrderRepository;
@@ -19,12 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RepairOrderService {
 
+    private final CurrentUserService currentUserService;
     private final RepairOrderRepository repairOrderRepository;
     private final ClientRepository clientRepository;
     private final DeviceRepository deviceRepository;
 
     //CREATE
     public RepairOrderResponseDTO create(RepairOrderRequestDTO request) {
+        User user = currentUserService.getCurrentUser();
+
         Client client = clientRepository.findById(request.getClientId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
@@ -42,17 +46,19 @@ public class RepairOrderService {
         order.setCreatedAt(LocalDateTime.now());
         order.setClient(client);
         order.setDevice(device);
+        order.setUser(user);
         order.setStatus(RepairOrder.Status.NEW);
         getFinalPrice(order);
 
         RepairOrder saved = repairOrderRepository.save(order);
-
         return mapToResponseDTO(saved);
     }
 
     //GET ALL
     public List<RepairOrderResponseDTO> getAll() {
-        return repairOrderRepository.findAll()
+        User user = currentUserService.getCurrentUser();
+
+        return repairOrderRepository.findByUser(user)
                 .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());
@@ -71,8 +77,6 @@ public class RepairOrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         RepairOrderRequestDTO dto = new RepairOrderRequestDTO();
-
-        dto.setId(order.getId());
 
         dto.setClientId(order.getClient().getId());
         dto.setDeviceId(order.getDevice().getId());
@@ -123,23 +127,27 @@ public class RepairOrderService {
     }
 
     private RepairOrder.Status determineStatus(RepairOrder order) {
+        Boolean approved = order.getRepairApproved();
+        String diagnostics = order.getDiagnosticsResult();
+        boolean hasApproval = Boolean.TRUE.equals(approved);
+        boolean hasDiagnostics = diagnostics != null && !diagnostics.isBlank();
 
-        if (!order.getFinalSummary().isBlank() && order.getTimeSpentHours() != null && order.getLaborCost() != null && order.getPartsCost() != null && order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+        if (hasDiagnostics && hasApproval
+                && order.getFinalSummary() != null && !order.getFinalSummary().isBlank()
+                && order.getTimeSpentHours() != null
+                && order.getLaborCost() != null
+                && order.getPartsCost() != null) {
             return RepairOrder.Status.COMPLETED;
         }
-
-        if (order.getPartsCost() != null && order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+        if (hasDiagnostics && hasApproval && order.getPartsCost() != null) {
             return RepairOrder.Status.REPAIRING;
         }
-
-        if (order.getRepairApproved() && order.getDiagnosticsResult() != null) {
+        if (hasDiagnostics && hasApproval) {
             return RepairOrder.Status.WAITING_PARTS;
         }
-
-        if (order.getDiagnosticsResult() != null && !order.getDiagnosticsResult().isBlank() && !order.getRepairApproved()) {
+        if (hasDiagnostics && Boolean.FALSE.equals(approved)) {
             return RepairOrder.Status.CANCELED;
         }
-
         return RepairOrder.Status.DIAGNOSING;
     }
 

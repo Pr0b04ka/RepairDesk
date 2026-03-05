@@ -3,8 +3,8 @@ package com.Vlad.RepairDesk.controller;
 import com.Vlad.RepairDesk.dto.ClientRequestDTO;
 import com.Vlad.RepairDesk.dto.DeviceRequestDTO;
 import com.Vlad.RepairDesk.dto.RepairOrderRequestDTO;
-import com.Vlad.RepairDesk.repository.ClientRepository;
-import com.Vlad.RepairDesk.repository.DeviceRepository;
+import com.Vlad.RepairDesk.dto.RepairOrderResponseDTO;
+import com.Vlad.RepairDesk.model.RepairOrder;
 import com.Vlad.RepairDesk.service.ClientService;
 import com.Vlad.RepairDesk.service.DeviceService;
 import com.Vlad.RepairDesk.service.RepairOrderService;
@@ -14,6 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Controller
 @RequiredArgsConstructor
 public class ViewController {
@@ -22,8 +25,20 @@ public class ViewController {
     private final ClientService clientService;
     private final DeviceService deviceService;
 
-    private final ClientRepository clientRepository;
-    private final DeviceRepository deviceRepository;
+    @GetMapping("/")
+    public String landing() { return "index"; }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        List<RepairOrderResponseDTO> all = repairOrderService.getAll();
+        model.addAttribute("totalOrders", all.size());
+        model.addAttribute("activeOrders", all.stream().filter(o -> o.getStatus() != RepairOrder.Status.COMPLETED && o.getStatus() != RepairOrder.Status.CANCELED).count());
+        model.addAttribute("completedOrders", all.stream().filter(o -> o.getStatus() == RepairOrder.Status.COMPLETED).count());
+        model.addAttribute("totalClients", clientService.getAll().size());
+        model.addAttribute("totalDevices", deviceService.getAll().size());
+        model.addAttribute("recentOrders", all.stream().limit(10).collect(Collectors.toList()));
+        return "dashboard";
+    }
 
     // ------------------ ORDERS ------------------
 
@@ -36,8 +51,8 @@ public class ViewController {
     @GetMapping("/orders/create")
     public String createOrderForm(Model model) {
         model.addAttribute("order", new RepairOrderRequestDTO());
-        model.addAttribute("clients", clientRepository.findAll());
-        model.addAttribute("devices", deviceRepository.findAll());
+        model.addAttribute("clients", clientService.getAll());
+        model.addAttribute("devices", deviceService.getAll());
         return "create_order";
     }
 
@@ -50,8 +65,9 @@ public class ViewController {
     @GetMapping("/orders/edit/{id}")
     public String editOrderForm(@PathVariable Long id, Model model) {
         model.addAttribute("order", repairOrderService.getByIdForEdit(id));
-        model.addAttribute("clients", clientRepository.findAll());
-        model.addAttribute("devices", deviceRepository.findAll());
+        model.addAttribute("orderId", id);
+        model.addAttribute("clients", clientService.getAll());
+        model.addAttribute("devices", deviceService.getAll());
         return "edit_order";
     }
 

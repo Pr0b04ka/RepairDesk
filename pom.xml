@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.Vlad</groupId>
 	<artifactId>RepairDesk</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<name>RepairDesk</name>
 	<description>Spring Boot project for keeping track of customer data for an electronics repair service</description>
 	<url/>
@@ -58,10 +58,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 	</dependencies>
 

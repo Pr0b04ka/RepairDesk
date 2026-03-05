@@ -3,6 +3,7 @@ package com.Vlad.RepairDesk.service;
 import com.Vlad.RepairDesk.dto.DeviceRequestDTO;
 import com.Vlad.RepairDesk.dto.DeviceResponseDTO;
 import com.Vlad.RepairDesk.model.Device;
+import com.Vlad.RepairDesk.model.User;
 import com.Vlad.RepairDesk.repository.DeviceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,30 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeviceService {
 
+    private final CurrentUserService currentUserService;
     private final DeviceRepository deviceRepository;
 
     // CREATE
     public DeviceResponseDTO create(DeviceRequestDTO request) {
+
+        User user = currentUserService.getCurrentUser();
+
         Device device = new Device();
         device.setBrand(request.getBrand());
         device.setModel(request.getModel());
         device.setType(request.getType());
+        device.setUser(user);
 
         Device saved = deviceRepository.save(device);
+
         return mapToResponseDTO(saved);
     }
 
     // GET ALL
     public List<DeviceResponseDTO> getAll() {
-        return deviceRepository.findAll()
+        User user = currentUserService.getCurrentUser();
+
+        return deviceRepository.findByUser(user)
                 .stream()
                 .map(this::mapToResponseDTO)
                 .collect(Collectors.toList());

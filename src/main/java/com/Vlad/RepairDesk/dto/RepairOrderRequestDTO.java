@@ -3,15 +3,13 @@ package com.Vlad.RepairDesk.dto;
 import com.Vlad.RepairDesk.model.RepairOrder;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class RepairOrderRequestDTO {
-    private Long id;
+//    private Long id;
     private String complaint;
     private String diagnosticsResult;
     private Boolean repairApproved;

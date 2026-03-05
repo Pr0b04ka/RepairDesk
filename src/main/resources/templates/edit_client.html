@@ -2,32 +2,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Создать клиента</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Редактировать клиента — RepairDesk</title>
 </head>
-<body>
-<div class="container mt-4">
-    <h2>Создать клиента</h2>
-    <form th:action="@{/clients/edit/{id}(id=${client.id})}" th:object="${client}" method="post">
-        <div class="mb-3">
-            <label>Имя</label>
-            <input type="text" th:field="*{firstName}" class="form-control" required>
+<body th:replace="~{layout :: layout('Редактировать клиента — RepairDesk', ~{::section})}">
+
+<section>
+<div class="topbar">
+    <div class="page-title">◉ Редактировать клиента</div>
+    <a class="btn btn-secondary btn-sm" th:href="@{/clients}">← Назад</a>
+</div>
+
+<div class="page-content">
+    <form class="rd-form" th:action="@{/clients/edit/{id}(id=${client.id})}" th:object="${client}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label>Фамилия</label>
-            <input type="text" th:field="*{lastName}" class="form-control" required>
+        <div class="form-group">
+            <label for="lastName">Фамилия</label>
+            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label>Телефон</label>
-            <input type="text" th:field="*{phone}" class="form-control" required>
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="text" id="phone" th:field="*{phone}" class="form-control" required>
         </div>
-        <div class="mb-3">
-            <label>Email</label>
-            <input type="email" th:field="*{email}" class="form-control">
+        <div class="form-group">
+            <label for="email">Email <span style="color:var(--muted);font-size:11px;">(необязательно)</span></label>
+            <input type="email" id="email" th:field="*{email}" class="form-control">
         </div>
-        <button class="btn btn-success mt-2">Сохранить</button>
-        <a class="btn btn-secondary" th:href="@{/clients}">Назад</a>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">→ Сохранить</button>
+            <a class="btn btn-secondary" th:href="@{/clients}">Отмена</a>
+        </div>
     </form>
 </div>
+</section>
+
 </body>
 </html>

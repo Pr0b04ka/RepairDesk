@@ -2,60 +2,79 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Список заказов</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Заказы — RepairDesk</title>
 </head>
-<body>
-<div class="container mt-4">
-    <h2>Список заказов</h2>
-    <div class="mb-3">
-        <a class="btn btn-primary" th:href="@{/orders/create}">Создать заказ</a>
-        <a class="btn btn-secondary" th:href="@{/clients}">Клиенты</a>
-        <a class="btn btn-secondary" th:href="@{/devices}">Устройства</a>
+<body th:replace="~{layout :: layout('Заказы — RepairDesk', ~{::section})}">
+
+<section>
+<div class="topbar">
+    <div class="page-title">⚙ Заказы</div>
+</div>
+
+<div class="page-content">
+
+    <div class="toolbar">
+        <a class="btn btn-primary" th:href="@{/orders/create}">+ Новый заказ</a>
     </div>
-    <table class="table table-striped table-bordered">
+
+    <table class="rd-table">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>#</th>
             <th>Клиент</th>
             <th>Устройство</th>
             <th>Жалоба</th>
             <th>Диагностика</th>
-            <th>Ремонт одобрен</th>
-            <th>Время (ч)</th>
-            <th>Краткий итог</th>
-            <th>Стоимость</th>
+            <th>Одобрен</th>
+            <th>Время</th>
+            <th>Итог</th>
+            <th>Сумма</th>
             <th>Статус</th>
             <th>Действия</th>
         </tr>
         </thead>
         <tbody>
+        <tr th:if="${#lists.isEmpty(orders)}">
+            <td colspan="11" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
+                Нет заказов. <a th:href="@{/orders/create}" style="color:var(--accent);">Создать первый →</a>
+            </td>
+        </tr>
         <tr th:each="order : ${orders}">
-            <td th:text="${order.id}"></td>
+            <td style="font-family:'IBM Plex Mono',monospace; color:var(--muted);" th:text="'#' + ${order.id}"></td>
             <td th:text="${order.clientFirstName} + ' ' + ${order.clientLastName}"></td>
-            <td th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></td>
-            <td th:text="${order.complaint}"></td>
-            <td th:text="${order.diagnosticsResult}"></td>
-            <td th:text="${order.repairApproved} ? 'Да' : 'Нет'"></td>
-            <td th:text="${order.timeSpentHours}"></td>
-            <td th:text="${order.finalSummary}"></td>
-            <td th:text="${order.finalPrice}"></td>
-            <td th:text="${order.status}"></td>
             <td>
-                <a class="btn btn-sm btn-warning"
-                   th:href="@{/orders/edit/{id}(id=${order.id})}">
-                    Редактировать
-                </a>
-
+                <span th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></span>
+                <br>
+                <span style="font-size:11px; color:var(--muted);" th:text="${order.deviceType}"></span>
+            </td>
+            <td th:text="${order.complaint}"></td>
+            <td style="color:var(--muted); font-size:12px;" th:text="${order.diagnosticsResult} ?: '—'"></td>
+            <td>
+                <span th:if="${order.repairApproved}" style="color:var(--success);">✓</span>
+                <span th:unless="${order.repairApproved}" style="color:var(--muted);">—</span>
+            </td>
+            <td style="font-family:'IBM Plex Mono',monospace; font-size:12px;"
+                th:text="${order.timeSpentHours != null ? order.timeSpentHours + ' ч' : '—'}"></td>
+            <td style="color:var(--muted); font-size:12px;" th:text="${order.finalSummary} ?: '—'"></td>
+            <td style="font-family:'IBM Plex Mono',monospace; color:var(--accent2);"
+                th:text="${order.finalPrice != null ? order.finalPrice + ' ₽' : '—'}"></td>
+            <td>
+                <span class="badge"
+                      th:classappend="'badge-' + ${order.status}"
+                      th:text="${order.status}">
+                </span>
+            </td>
+            <td style="white-space:nowrap;">
+                <a class="btn btn-sm btn-warning" th:href="@{/orders/edit/{id}(id=${order.id})}">Изменить</a>
                 <a class="btn btn-sm btn-danger"
                    th:href="@{/orders/delete/{id}(id=${order.id})}"
-                   onclick="return confirm('Удалить заказ?');">
-                    Удалить
-                </a>
+                   onclick="return confirm('Удалить заказ?');">Удалить</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+</section>
+
 </body>
 </html>

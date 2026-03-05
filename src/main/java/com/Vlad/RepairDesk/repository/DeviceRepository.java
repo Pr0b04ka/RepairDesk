@@ -1,10 +1,13 @@
 package com.Vlad.RepairDesk.repository;
 
 import com.Vlad.RepairDesk.model.Device;
+import com.Vlad.RepairDesk.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.List;
+
 public interface DeviceRepository extends JpaRepository<Device, Long> {
+
+    List<Device> findByUser(User user);
 
 }

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepairDesk — Electronics Repair CRM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0f0f;
+            --surface: #161616;
+            --border: #2a2a2a;
+            --accent: #ff6b00;
+            --text: #e8e8e8;
+            --muted: #888;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Grid lines background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,107,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,107,0,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Header ── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 48px;
+            background: rgba(15,15,15,0.85);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            z-index: 10;
+        }
+
+        .header-logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .header-nav { display: flex; gap: 8px; }
+
+        .nav-btn {
+            padding: 8px 20px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: 1px solid;
+            transition: all 0.15s;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .nav-btn-outline { border-color: var(--border); color: var(--muted); }
+        .nav-btn-outline:hover { border-color: var(--text); color: var(--text); }
+
+        .nav-btn-filled { border-color: var(--accent); color: var(--accent); }
+        .nav-btn-filled:hover { background: var(--accent); color: #000; }
+
+        /* ── Hero ── */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 48px 80px;
+            z-index: 1;
+        }
+
+        .hero-content { max-width: 680px; }
+
+        .hero-eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 32px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        .hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(52px, 8vw, 96px);
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -1px;
+            color: var(--text);
+            margin-bottom: 28px;
+        }
+
+        .hero-title span { color: var(--accent); }
+
+        .hero-desc {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--muted);
+            max-width: 480px;
+            margin-bottom: 40px;
+        }
+
+        .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        .cta-btn {
+            padding: 14px 32px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .cta-primary {
+            background: var(--accent);
+            color: #000;
+            font-weight: 500;
+        }
+        .cta-primary:hover { background: #ff8c2a; }
+
+        .cta-secondary {
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+        .cta-secondary:hover { border-color: var(--text); color: var(--text); }
+
+        /* Decorative big text */
+        .hero-deco {
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 280px;
+            font-weight: 700;
+            color: rgba(255,107,0,0.04);
+            letter-spacing: -8px;
+            pointer-events: none;
+            user-select: none;
+            line-height: 1;
+        }
+
+        /* ── Features ── */
+        .features {
+            position: relative;
+            z-index: 1;
+            padding: 80px 48px;
+            border-top: 1px solid var(--border);
+        }
+
+        .features-heading {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 48px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .feature-card {
+            background: var(--bg);
+            padding: 32px 28px;
+            transition: background 0.15s;
+        }
+
+        .feature-card:hover { background: var(--surface); }
+
+        .feature-icon {
+            font-size: 28px;
+            margin-bottom: 16px;
+            display: block;
+            color: var(--accent);
+        }
+
+        .feature-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        /* ── Footer ── */
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 24px 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        footer .logo { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
+        footer .copy { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-logo">RepairDesk</div>
+    <nav class="header-nav">
+        <a th:href="@{/login}" class="nav-btn nav-btn-outline">Login</a>
+        <a th:href="@{/login}" class="nav-btn nav-btn-filled">Get Started →</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-eyebrow">Electronics Repair CRM</div>
+        <h1 class="hero-title">
+            Manage<br>Your<br><span>Repairs.</span>
+        </h1>
+        <p class="hero-desc">
+            RepairDesk — система управления для сервисных центров.
+            Отслеживайте заказы, ведите базу клиентов и устройств — всё в одном месте.
+        </p>
+        <div class="hero-actions">
+            <a th:href="@{/login}" class="cta-btn cta-primary">→ Начать работу</a>
+            <a th:href="@{/login}" class="cta-btn cta-secondary">Войти</a>
+        </div>
+    </div>
+    <div class="hero-deco">RD</div>
+</section>
+
+<section class="features">
+    <div class="features-heading">// Возможности системы</div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">⚙</span>
+            <div class="feature-title">Заказы на ремонт</div>
+            <p class="feature-desc">Полный цикл от приёмки до выдачи. Автоматическое определение статуса на основе заполненных данных.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">◉</span>
+            <div class="feature-title">База клиентов</div>
+            <p class="feature-desc">Храните контакты клиентов и историю их заказов. Быстрый поиск и управление записями.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">▣</span>
+            <div class="feature-title">Каталог устройств</div>
+            <p class="feature-desc">Справочник техники по бренду, модели и типу. Привязка устройств к заказам.</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">◈</span>
+            <div class="feature-title">Дашборд</div>
+            <p class="feature-desc">Сводная статистика: активные заказы, выручка, нагрузка. Вся картина с первого взгляда.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="logo">RepairDesk</div>
+    <div class="copy">// Electronics Repair CRM &nbsp;·&nbsp; Built with Spring Boot</div>
+</footer>
+
+</body>
+</html>

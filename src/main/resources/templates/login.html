@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RepairDesk — Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0f0f;
+            --surface: #161616;
+            --border: #2a2a2a;
+            --accent: #ff6b00;
+            --text: #e8e8e8;
+            --muted: #888;
+            --danger: #e03535;
+            --success: #2ecc71;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* Left panel – branding */
+        .brand-panel {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-panel::before {
+            content: 'REPAIR\ADESK';
+            position: absolute;
+            top: -40px; right: -60px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 160px;
+            font-weight: 700;
+            color: rgba(255,107,0,0.04);
+            letter-spacing: -4px;
+            pointer-events: none;
+            line-height: 1;
+            white-space: pre;
+        }
+
+        .brand-logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .brand-tagline {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 48px;
+        }
+
+        .brand-features { list-style: none; }
+
+        .brand-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .brand-features li::before {
+            content: '→';
+            color: var(--accent);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Right panel – forms */
+        .auth-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+
+        .tab-btn {
+            padding: 10px 0;
+            margin-right: 28px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--muted);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .form-heading {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            color: var(--text);
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 11px 14px;
+            background: #1e1e1e;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.15s;
+        }
+
+        .form-group input:focus { border-color: var(--accent); }
+
+        .submit-btn {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            border: none;
+            color: #000;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover { background: #ff8c2a; }
+
+        .alert {
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            border-left: 3px solid;
+        }
+
+        .alert-danger  { background: rgba(224,53,53,0.1); border-color: var(--danger);  color: #ff8080; }
+        .alert-success { background: rgba(46,204,113,0.1); border-color: var(--success); color: #7df5ae; }
+
+        @media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .brand-panel { display: none; }
+            .auth-panel { padding: 40px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="brand-panel">
+    <div class="brand-logo">RepairDesk</div>
+    <div class="brand-tagline">// Electronics Repair CRM</div>
+    <ul class="brand-features">
+        <li>Track repair orders from intake to completion</li>
+        <li>Manage client database and history</li>
+        <li>Monitor device inventory</li>
+        <li>Automatic status detection</li>
+    </ul>
+</div>
+
+<div class="auth-panel">
+
+    <!-- Spring Security error/logout params -->
+    <div th:if="${param.error}" class="alert alert-danger">
+        Неверный логин или пароль.
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success">
+        Вы вышли из системы.
+    </div>
+
+    <!-- Flash messages from register -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('login', this)">Login</button>
+        <button class="tab-btn" onclick="showTab('register', this)">Register</button>
+    </div>
+
+    <!-- LOGIN — обрабатывается Spring Security -->
+    <div id="tab-login" class="tab-panel active">
+        <div class="form-heading">Войти в систему</div>
+        <form method="post" th:action="@{/auth/login}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" name="username" placeholder="Введите логин" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" name="password" placeholder="Введите пароль" required>
+            </div>
+            <button type="submit" class="submit-btn">→ Войти</button>
+        </form>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="tab-register" class="tab-panel">
+        <div class="form-heading">Создать аккаунт</div>
+        <form method="post" th:action="@{/auth/register}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" name="login" placeholder="Придумайте логин" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" name="password" placeholder="Придумайте пароль" required>
+            </div>
+            <button type="submit" class="submit-btn">→ Зарегистрироваться</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showTab(name, btn) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + name).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // If register error/success, switch to register tab
+    const flash = document.querySelector('.alert');
+    if (flash && document.querySelector('#tab-register')) {
+        const isRegisterError = /*[[ ${errorMessage} ]]*/null || /*[[ ${successMessage} ]]*/null;
+    }
+</script>
+</body>
+</html>
