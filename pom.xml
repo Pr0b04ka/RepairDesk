@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.Vlad</groupId>
 	<artifactId>RepairDesk</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<name>RepairDesk</name>
 	<description>Spring Boot project for keeping track of customer data for an electronics repair service</description>
 	<url/>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.17.2</version>
+            <version>1.16.1</version>
         </dependency>
 	</dependencies>
 
