@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(#{nav.parts} + ' — RepairDesk', ~{::section})}">
+<head></head>
+<body>
+<section>
+    <div class="topbar">
+        <div class="page-title">🔩 <span th:text="#{nav.parts}">Parts Search</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);">
+            // src: aks.ua
+        </div>
+    </div>
+
+    <style>
+        .search-bar { display: flex; gap: 8px; margin-bottom: 28px; }
+        .search-input { flex: 1; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.15s; }
+        .search-input:focus { border-color: var(--accent); }
+        .search-input::placeholder { color: var(--muted); }
+
+        .parts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+        .part-card { background: var(--surface); border: 1px solid var(--border); padding: 16px; transition: border-color 0.15s; position: relative; }
+        .part-card:hover { border-color: var(--accent); }
+
+        .part-name { font-size: 13px; color: var(--text); margin-bottom: 10px; line-height: 1.4; }
+
+        .part-price-block { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+        .part-price { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+        .part-old-price { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); text-decoration: line-through; }
+
+        .part-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+
+        .stock-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 3px 7px; border: 1px solid; }
+        .stock-in  { border-color: var(--success); color: var(--success); }
+        .stock-out { border-color: var(--muted);   color: var(--muted); }
+
+        .part-link { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent); text-decoration: none; letter-spacing: 1px; text-transform: uppercase; transition: opacity 0.15s; }
+        .part-link:hover { opacity: 0.7; }
+
+        .results-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 20px; letter-spacing: 1px; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+        .empty-state .big { font-family: 'Rajdhani', sans-serif; font-size: 48px; color: var(--border); margin-bottom: 12px; }
+    </style>
+
+    <div class="page-content">
+
+        <!-- Search form -->
+        <form method="get" th:action="@{/parts/search}" class="search-bar">
+            <input class="search-input"
+                   type="text"
+                   name="query"
+                   th:value="${query}"
+                   placeholder="iPhone 14 дисплей, Samsung батарея..."
+                   autofocus>
+            <button type="submit" class="btn btn-primary">⌕ Search</button>
+        </form>
+
+        <!-- No query yet -->
+        <div th:if="${query == null or query.isBlank()}" class="empty-state">
+            <div class="big">🔩</div>
+            <div>Введите запрос для поиска запчастей на aks.ua</div>
+        </div>
+
+        <!-- Results -->
+        <div th:if="${results != null}">
+            <div class="results-count"
+                 th:text="'// found: ' + ${#lists.size(results)} + ' items for &quot;' + ${query} + '&quot;'">
+            </div>
+
+            <!-- Empty results -->
+            <div th:if="${#lists.isEmpty(results)}" class="empty-state">
+                <div class="big">◌</div>
+                <div th:text="'Nothing found for: ' + ${query}">Nothing found</div>
+            </div>
+
+            <!-- Grid -->
+            <div class="parts-grid" th:unless="${#lists.isEmpty(results)}">
+                <div class="part-card" th:each="p : ${results}">
+                    <div class="part-name" th:text="${p.name}">Product name</div>
+
+                    <div class="part-price-block">
+                        <span class="part-price" th:text="${p.price}">0 грн</span>
+                        <span class="part-old-price"
+                              th:if="${p.oldPrice != null}"
+                              th:text="${p.oldPrice}"></span>
+                    </div>
+
+                    <div class="part-footer">
+                    <span class="stock-badge"
+                          th:classappend="${p.inStock} ? ' stock-in' : ' stock-out'"
+                          th:text="${p.inStock} ? 'IN STOCK' : 'OUT OF STOCK'">
+                    </span>
+                        <a class="part-link"
+                           th:href="${p.url}"
+                           target="_blank">aks.ua →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+</body>
+</html>

@@ -5,10 +5,7 @@ import com.Vlad.RepairDesk.dto.DeviceRequestDTO;
 import com.Vlad.RepairDesk.dto.RepairOrderRequestDTO;
 import com.Vlad.RepairDesk.dto.RepairOrderResponseDTO;
 import com.Vlad.RepairDesk.model.RepairOrder;
-import com.Vlad.RepairDesk.service.ClientService;
-import com.Vlad.RepairDesk.service.DeviceService;
-import com.Vlad.RepairDesk.service.ExchangeRateService;
-import com.Vlad.RepairDesk.service.RepairOrderService;
+import com.Vlad.RepairDesk.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +25,7 @@ public class ViewController {
     private final ClientService clientService;
     private final DeviceService deviceService;
     private final ExchangeRateService exchangeRateService;
+    private final AksParserService aksParserService;
 
     @GetMapping("/")
     public String landing() { return "index"; }
@@ -49,6 +47,16 @@ public class ViewController {
         model.addAttribute("usdRate", rates.getOrDefault("USD", BigDecimal.valueOf(44)));
         model.addAttribute("eurRate", rates.getOrDefault("EUR", BigDecimal.valueOf(51)));
         return "dashboard";
+    }
+
+    @GetMapping("/parts/search")
+    public String searchParts(@RequestParam(required = false) String query, Model model) {
+        model.addAttribute("activePage", "orders");
+        model.addAttribute("query", query);
+        if (query != null && !query.isBlank()) {
+            model.addAttribute("results", aksParserService.search(query));
+        }
+        return "parts_search";
     }
 
     // ------------------ ORDERS ------------------

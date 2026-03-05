@@ -119,6 +119,10 @@
             <span class="nav-icon">▣</span>
             <span th:text="#{nav.devices}">Devices</span>
         </a>
+        <a th:href="@{/parts/search}" class="nav-link" th:classappend="${activePage == 'parts'} ? ' active'">
+            <span class="nav-icon">⬡</span>
+            <span th:text="#{nav.parts}">Parts</span>
+        </a>
     </div>
 
     <div class="lang-section">
@@ -153,5 +157,6 @@
         });
     }, 3000);
 </script>
+
 </body>
 </html>
