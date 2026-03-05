@@ -1,39 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Устройства — RepairDesk</title>
-</head>
-<body th:replace="~{layout :: layout('Устройства — RepairDesk', ~{::section})}">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(#{page.devices} + ' — RepairDesk', ~{::section})}">
+<head></head>
+<body>
 <section>
 <div class="topbar">
-    <div class="page-title">▣ Устройства</div>
+    <div class="page-title">▣ <span th:text="#{page.devices}">Devices</span></div>
 </div>
-
 <div class="page-content">
-
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
     <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
     <div class="toolbar">
-        <a class="btn btn-primary" th:href="@{/devices/create}">+ Новое устройство</a>
+        <a class="btn btn-primary" th:href="@{/devices/create}">+ <span th:text="#{devices.new}">New Device</span></a>
     </div>
 
     <table class="rd-table">
         <thead>
         <tr>
             <th>#</th>
-            <th>Бренд</th>
-            <th>Модель</th>
-            <th>Тип</th>
-            <th>Действия</th>
+            <th th:text="#{devices.brand}">Brand</th>
+            <th th:text="#{devices.model}">Model</th>
+            <th th:text="#{devices.type}">Type</th>
+            <th th:text="#{devices.actions}">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:if="${#lists.isEmpty(devices)}">
             <td colspan="5" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
-                Нет устройств. <a th:href="@{/devices/create}" style="color:var(--accent);">Добавить первое →</a>
+                <a th:href="@{/devices/create}" style="color:var(--accent);" th:text="#{devices.new}">New Device</a>
             </td>
         </tr>
         <tr th:each="device : ${devices}">
@@ -42,16 +37,18 @@
             <td th:text="${device.model}"></td>
             <td style="color:var(--muted);" th:text="${device.type}"></td>
             <td>
-                <a class="btn btn-sm btn-warning" th:href="@{/devices/edit/{id}(id=${device.id})}">Изменить</a>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{/devices/edit/{id}(id=${device.id})}"
+                   th:text="#{btn.edit}">Edit</a>
                 <a class="btn btn-sm btn-danger"
                    th:href="@{/devices/delete/{id}(id=${device.id})}"
-                   onclick="return confirm('Удалить устройство?');">Удалить</a>
+                   th:attr="onclick='return confirm(\'' + #{confirm.deleteDevice} + '\')';"
+                   th:text="#{btn.delete}">Delete</a>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
 </section>
-
 </body>
 </html>

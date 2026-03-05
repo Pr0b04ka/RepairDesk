@@ -3,54 +3,56 @@
       th:replace="~{layout :: layout('Dashboard — RepairDesk', ~{::section})}">
 <head></head>
 <body>
-
 <section>
     <div class="topbar">
-        <div class="page-title">◈ Dashboard</div>
+        <div class="page-title">◈ <span th:text="#{page.dashboard}">Dashboard</span></div>
     </div>
-
     <div class="page-content">
-
         <div class="stats-grid">
             <div class="stat-card accent">
-                <div class="stat-label">Всего заказов</div>
+                <div class="stat-label" th:text="#{dashboard.totalOrders}">Total Orders</div>
                 <div class="stat-value" th:text="${totalOrders}">0</div>
             </div>
             <div class="stat-card blue">
-                <div class="stat-label">Активных</div>
+                <div class="stat-label" th:text="#{dashboard.activeOrders}">Active</div>
                 <div class="stat-value" th:text="${activeOrders}">0</div>
             </div>
             <div class="stat-card green">
-                <div class="stat-label">Завершено</div>
+                <div class="stat-label" th:text="#{dashboard.completed}">Completed</div>
                 <div class="stat-value" th:text="${completedOrders}">0</div>
             </div>
             <div class="stat-card warn">
-                <div class="stat-label">Клиентов</div>
+                <div class="stat-label" th:text="#{dashboard.totalClients}">Clients</div>
                 <div class="stat-value" th:text="${totalClients}">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Устройств</div>
+                <div class="stat-label" th:text="#{dashboard.totalDevices}">Devices</div>
                 <div class="stat-value" th:text="${totalDevices}">0</div>
             </div>
         </div>
 
-        <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">
-                // Последние заказы
-            </span>
-            <a th:href="@{/orders}" class="btn btn-secondary btn-sm">Все заказы →</a>
+        <div style="margin-bottom:12px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);"
+                  th:text="#{dashboard.recentOrders}">// Recent orders</span>
+            <a th:href="@{/orders}" class="btn btn-secondary btn-sm" th:text="#{dashboard.allOrders}">All orders →</a>
         </div>
 
         <table class="rd-table">
             <thead>
             <tr>
-                <th>#</th><th>Клиент</th><th>Устройство</th><th>Жалоба</th><th>Статус</th><th>Сумма</th>
+                <th>#</th>
+                <th th:text="#{orders.client}">Client</th>
+                <th th:text="#{orders.device}">Device</th>
+                <th th:text="#{orders.complaint}">Complaint</th>
+                <th th:text="#{orders.status}">Status</th>
+                <th th:text="#{orders.price}">Price</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(recentOrders)}">
                 <td colspan="6" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
-                    Нет заказов. <a th:href="@{/orders/create}" style="color:var(--accent);">Создать первый →</a>
+                    <span th:text="#{dashboard.noOrders}">No orders yet.</span>
+                    <a th:href="@{/orders/create}" style="color:var(--accent);" th:text="#{dashboard.createFirst}">Create first →</a>
                 </td>
             </tr>
             <tr th:each="order : ${recentOrders}">
@@ -59,12 +61,11 @@
                 <td th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></td>
                 <td th:text="${order.complaint}"></td>
                 <td><span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}"></span></td>
-                <td th:text="${order.finalPrice != null ? order.finalPrice + ' ₽' : '—'}"></td>
+                <td th:text="${order.finalPrice != null ? order.finalPrice + ' ₴' : '—'}"></td>
             </tr>
             </tbody>
         </table>
     </div>
 </section>
-
 </body>
 </html>

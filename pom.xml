@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.Vlad</groupId>
 	<artifactId>RepairDesk</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>RepairDesk</name>
 	<description>Spring Boot project for keeping track of customer data for an electronics repair service</description>
 	<url/>

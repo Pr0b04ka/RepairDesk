@@ -1,42 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Редактировать устройство — RepairDesk</title>
-</head>
-<body th:replace="~{layout :: layout('Редактировать устройство — RepairDesk', ~{::section})}">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(#{btn.edit} + ' ' + #{page.devices} + ' — RepairDesk', ~{::section})}">
+<head></head>
+<body>
 <section>
 <div class="topbar">
-    <div class="page-title">▣ Редактировать устройство</div>
-    <a class="btn btn-secondary btn-sm" th:href="@{/devices}">← Назад</a>
+    <div class="page-title">▣ <span th:text="#{btn.edit}">Edit</span> <span th:text="#{page.devices}">Device</span></div>
+    <a class="btn btn-secondary btn-sm" th:href="@{/devices}" th:text="'← ' + #{btn.back}">← Back</a>
 </div>
-
 <div class="page-content">
     <form class="rd-form" th:action="@{/devices/edit/{id}(id=${device.id})}" th:object="${device}" method="post">
-        <!-- ИСПРАВЛЕНО: было /device/edit → должно быть /devices/edit -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
         <div class="form-group">
-            <label for="brand">Бренд</label>
+            <label for="brand" th:text="#{devices.brand}">Brand</label>
             <input type="text" id="brand" th:field="*{brand}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="model">Модель</label>
+            <label for="model" th:text="#{devices.model}">Model</label>
             <input type="text" id="model" th:field="*{model}" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="type">Тип устройства</label>
+            <label for="type" th:text="#{devices.type}">Type</label>
             <input type="text" id="type" th:field="*{type}" class="form-control" required>
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-success">→ Сохранить</button>
-            <a class="btn btn-secondary" th:href="@{/devices}">Отмена</a>
+            <button type="submit" class="btn btn-success">→ <span th:text="#{btn.save}">Save</span></button>
+            <a class="btn btn-secondary" th:href="@{/devices}" th:text="#{btn.cancel}">Cancel</a>
         </div>
     </form>
 </div>
 </section>
-
 </body>
 </html>
