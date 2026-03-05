@@ -7,6 +7,7 @@ import com.Vlad.RepairDesk.dto.RepairOrderResponseDTO;
 import com.Vlad.RepairDesk.model.RepairOrder;
 import com.Vlad.RepairDesk.service.ClientService;
 import com.Vlad.RepairDesk.service.DeviceService;
+import com.Vlad.RepairDesk.service.ExchangeRateService;
 import com.Vlad.RepairDesk.service.RepairOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,6 +27,7 @@ public class ViewController {
     private final RepairOrderService repairOrderService;
     private final ClientService clientService;
     private final DeviceService deviceService;
+    private final ExchangeRateService exchangeRateService;
 
     @GetMapping("/")
     public String landing() { return "index"; }
@@ -31,12 +35,19 @@ public class ViewController {
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         List<RepairOrderResponseDTO> all = repairOrderService.getAll();
+        Map<String, BigDecimal> rates = exchangeRateService.getRates();
+
         model.addAttribute("totalOrders", all.size());
-        model.addAttribute("activeOrders", all.stream().filter(o -> o.getStatus() != RepairOrder.Status.COMPLETED && o.getStatus() != RepairOrder.Status.CANCELED).count());
-        model.addAttribute("completedOrders", all.stream().filter(o -> o.getStatus() == RepairOrder.Status.COMPLETED).count());
+        model.addAttribute("activeOrders", all.stream()
+                .filter(o -> o.getStatus() != RepairOrder.Status.COMPLETED
+                        && o.getStatus() != RepairOrder.Status.CANCELED).count());
+        model.addAttribute("completedOrders", all.stream()
+                .filter(o -> o.getStatus() == RepairOrder.Status.COMPLETED).count());
         model.addAttribute("totalClients", clientService.getAll().size());
         model.addAttribute("totalDevices", deviceService.getAll().size());
         model.addAttribute("recentOrders", all.stream().limit(10).collect(Collectors.toList()));
+        model.addAttribute("usdRate", rates.getOrDefault("USD", BigDecimal.valueOf(44)));
+        model.addAttribute("eurRate", rates.getOrDefault("EUR", BigDecimal.valueOf(51)));
         return "dashboard";
     }
 
@@ -44,7 +55,10 @@ public class ViewController {
 
     @GetMapping("/orders")
     public String listOrders(Model model) {
+        Map<String, BigDecimal> rates = exchangeRateService.getRates();
         model.addAttribute("orders", repairOrderService.getAll());
+        model.addAttribute("usdRate", rates.getOrDefault("USD", BigDecimal.valueOf(44)));
+        model.addAttribute("eurRate", rates.getOrDefault("EUR", BigDecimal.valueOf(51)));
         return "orders";
     }
 

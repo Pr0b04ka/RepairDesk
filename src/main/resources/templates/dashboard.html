@@ -6,7 +6,27 @@
 <section>
     <div class="topbar">
         <div class="page-title">◈ <span th:text="#{page.dashboard}">Dashboard</span></div>
+        <div class="rate-widget">
+            <div class="rate-item">
+                <span class="rate-ccy">USD</span>
+                <span class="rate-value" th:text="${#numbers.formatDecimal(usdRate, 1, 2)} + ' ₴'">40.00 ₴</span>
+            </div>
+            <div class="rate-divider"></div>
+            <div class="rate-item">
+                <span class="rate-ccy">EUR</span>
+                <span class="rate-value" th:text="${#numbers.formatDecimal(eurRate, 1, 2)} + ' ₴'">50.00 ₴</span>
+            </div>
+        </div>
     </div>
+    <style>
+        .rate-widget { display: flex; align-items: center; gap: 12px; background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; }
+        .rate-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-right: 4px; }
+        .rate-item { display: flex; align-items: center; gap: 6px; }
+        .rate-ccy { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+        .rate-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 500; }
+        .rate-divider { width: 1px; height: 16px; background: var(--border); }
+    </style>
+
     <div class="page-content">
         <div class="stats-grid">
             <div class="stat-card accent">
@@ -61,7 +81,14 @@
                 <td th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></td>
                 <td th:text="${order.complaint}"></td>
                 <td><span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}"></span></td>
-                <td th:text="${order.finalPrice != null ? order.finalPrice + ' ₴' : '—'}"></td>
+                <td th:if="${order.finalPrice != null}">
+                    <span style="color:var(--accent2); font-family:'IBM Plex Mono',monospace;"
+                          th:text="${#numbers.formatDecimal(order.finalPrice, 1, 0)} + ' ₴'"></span>
+                    <br>
+                    <span style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px;"
+                          th:text="'≈ $' + ${#numbers.formatDecimal(order.finalPrice / usdRate, 1, 2)}"></span>
+                </td>
+                <td th:unless="${order.finalPrice != null}" style="color:var(--muted);">—</td>
             </tr>
             </tbody>
         </table>

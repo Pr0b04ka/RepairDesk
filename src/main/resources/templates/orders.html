@@ -4,70 +4,96 @@
 <head></head>
 <body>
 <section>
-<div class="topbar">
-    <div class="page-title">⚙ <span th:text="#{page.orders}">Orders</span></div>
-</div>
-<div class="page-content">
-    <div class="toolbar">
-        <a class="btn btn-primary" th:href="@{/orders/create}">+ <span th:text="#{orders.new}">New Order</span></a>
+    <div class="topbar">
+        <div class="page-title">⚙ <span th:text="#{page.orders}">Orders</span></div>
+        <div class="rate-widget">
+            <div class="rate-item">
+                <span class="rate-ccy">USD</span>
+                <span class="rate-value" th:text="${#numbers.formatDecimal(usdRate, 1, 2)} + ' ₴'">40.00 ₴</span>
+            </div>
+            <div class="rate-divider"></div>
+            <div class="rate-item">
+                <span class="rate-ccy">EUR</span>
+                <span class="rate-value" th:text="${#numbers.formatDecimal(eurRate, 1, 2)} + ' ₴'">50.00 ₴</span>
+            </div>
+        </div>
     </div>
+    <style>
+        .rate-widget { display: flex; align-items: center; gap: 12px; background: var(--surface2); border: 1px solid var(--border); padding: 8px 16px; }
+        .rate-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; margin-right: 4px; }
+        .rate-item { display: flex; align-items: center; gap: 6px; }
+        .rate-ccy { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+        .rate-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 500; }
+        .rate-divider { width: 1px; height: 16px; background: var(--border); }
+    </style>
 
-    <table class="rd-table">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th th:text="#{orders.client}">Client</th>
-            <th th:text="#{orders.device}">Device</th>
-            <th th:text="#{orders.complaint}">Complaint</th>
-            <th th:text="#{orders.diagnostics}">Diagnostics</th>
-            <th th:text="#{orders.approved}">Approved</th>
-            <th th:text="#{orders.hours}">Hours</th>
-            <th th:text="#{orders.summary}">Summary</th>
-            <th th:text="#{orders.price}">Price</th>
-            <th th:text="#{orders.status}">Status</th>
-            <th th:text="#{orders.actions}">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(orders)}">
-            <td colspan="11" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
-                <a th:href="@{/orders/create}" style="color:var(--accent);" th:text="#{orders.new}">New Order</a>
-            </td>
-        </tr>
-        <tr th:each="order : ${orders}">
-            <td style="font-family:'IBM Plex Mono',monospace; color:var(--muted);" th:text="'#' + ${order.id}"></td>
-            <td th:text="${order.clientFirstName} + ' ' + ${order.clientLastName}"></td>
-            <td>
-                <span th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></span><br>
-                <span style="font-size:11px; color:var(--muted);" th:text="${order.deviceType}"></span>
-            </td>
-            <td th:text="${order.complaint}"></td>
-            <td style="color:var(--muted); font-size:12px;" th:text="${order.diagnosticsResult} ?: '—'"></td>
-            <td>
-                <span th:if="${order.repairApproved}" style="color:var(--success);">✓</span>
-                <span th:unless="${order.repairApproved}" style="color:var(--muted);">—</span>
-            </td>
-            <td style="font-family:'IBM Plex Mono',monospace; font-size:12px;"
-                th:text="${order.timeSpentHours != null ? order.timeSpentHours + ' h' : '—'}"></td>
-            <td style="color:var(--muted); font-size:12px;" th:text="${order.finalSummary} ?: '—'"></td>
-            <td style="font-family:'IBM Plex Mono',monospace; color:var(--accent2);"
-                th:text="${order.finalPrice != null ? order.finalPrice + ' ₴' : '—'}"></td>
-            <td>
-                <span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}"></span>
-            </td>
-            <td style="white-space:nowrap;">
-                <a class="btn btn-sm btn-warning"
-                   th:href="@{/orders/edit/{id}(id=${order.id})}"
-                   th:text="#{btn.edit}">Edit</a>
-                <a class="btn btn-sm btn-danger"
-                   th:href="@{/orders/delete/{id}(id=${order.id})}"
-                   th:attr="onclick='return confirm(\'' + #{confirm.deleteOrder} + '\')';"
-                   th:text="#{btn.delete}">Delete</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="page-content">
+        <div class="toolbar">
+            <a class="btn btn-primary" th:href="@{/orders/create}">+ <span th:text="#{orders.new}">New Order</span></a>
+        </div>
+
+        <table class="rd-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th th:text="#{orders.client}">Client</th>
+                <th th:text="#{orders.device}">Device</th>
+                <th th:text="#{orders.complaint}">Complaint</th>
+                <th th:text="#{orders.diagnostics}">Diagnostics</th>
+                <th th:text="#{orders.approved}">Approved</th>
+                <th th:text="#{orders.hours}">Hours</th>
+                <th th:text="#{orders.summary}">Summary</th>
+                <th th:text="#{orders.price}">Price</th>
+                <th th:text="#{orders.status}">Status</th>
+                <th th:text="#{orders.actions}">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="11" style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:center; padding:32px;">
+                    <a th:href="@{/orders/create}" style="color:var(--accent);" th:text="#{orders.new}">New Order</a>
+                </td>
+            </tr>
+            <tr th:each="order : ${orders}">
+                <td style="font-family:'IBM Plex Mono',monospace; color:var(--muted);" th:text="'#' + ${order.id}"></td>
+                <td th:text="${order.clientFirstName} + ' ' + ${order.clientLastName}"></td>
+                <td>
+                    <span th:text="${order.deviceBrand} + ' ' + ${order.deviceModel}"></span><br>
+                    <span style="font-size:11px; color:var(--muted);" th:text="${order.deviceType}"></span>
+                </td>
+                <td th:text="${order.complaint}"></td>
+                <td style="color:var(--muted); font-size:12px;" th:text="${order.diagnosticsResult} ?: '—'"></td>
+                <td>
+                    <span th:if="${order.repairApproved}" style="color:var(--success);">✓</span>
+                    <span th:unless="${order.repairApproved}" style="color:var(--muted);">—</span>
+                </td>
+                <td style="font-family:'IBM Plex Mono',monospace; font-size:12px;"
+                    th:text="${order.timeSpentHours != null ? order.timeSpentHours + ' h' : '—'}"></td>
+                <td style="color:var(--muted); font-size:12px;" th:text="${order.finalSummary} ?: '—'"></td>
+                <td th:if="${order.finalPrice != null}">
+                <span style="color:var(--accent2); font-family:'IBM Plex Mono',monospace; font-size:13px;"
+                      th:text="${#numbers.formatDecimal(order.finalPrice, 1, 0)} + ' ₴'"></span>
+                    <br>
+                    <span style="color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11px;"
+                          th:text="'≈ $' + ${#numbers.formatDecimal(order.finalPrice / usdRate, 1, 2)}"></span>
+                </td>
+                <td th:unless="${order.finalPrice != null}" style="color:var(--muted); font-family:'IBM Plex Mono',monospace;">—</td>
+                <td>
+                    <span class="badge" th:classappend="'badge-' + ${order.status}" th:text="${order.status}"></span>
+                </td>
+                <td style="white-space:nowrap;">
+                    <a class="btn btn-sm btn-warning"
+                       th:href="@{/orders/edit/{id}(id=${order.id})}"
+                       th:text="#{btn.edit}">Edit</a>
+                    <a class="btn btn-sm btn-danger"
+                       th:href="@{/orders/delete/{id}(id=${order.id})}"
+                       th:onclick="'return confirm(\'' + #{confirm.deleteOrder} + '\')';"
+                       th:text="#{btn.delete}">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </section>
 </body>
 </html>

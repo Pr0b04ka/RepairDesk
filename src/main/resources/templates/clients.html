@@ -44,7 +44,7 @@
                    th:text="#{btn.edit}">Edit</a>
                 <a class="btn btn-sm btn-danger"
                    th:href="@{/clients/delete/{id}(id=${client.id})}"
-                   th:attr="onclick='return confirm(\'' + #{confirm.deleteClient} + '\')';"
+                   th:onclick="'return confirm(\'' + #{confirm.deleteClient} + '\')'"
                    th:text="#{btn.delete}">Delete</a>
             </td>
         </tr>
