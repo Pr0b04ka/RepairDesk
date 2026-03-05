@@ -16,24 +16,27 @@
 
 **https://repairdesk-production-160c.up.railway.app/**
 
+login: demo
+password: demo
+
 ---
 
 ## 📸 Screenshots
-| Welcome | Login |
-|-------|-----------|
-| ![Welcome](screenshots/welcome.png) | ![Login](screenshots/login.png) |
+| Welcome |
+|-------|
+| ![Welcome](screenshots/welcome.png) |
 
-| Dashboard | Orders |
-|-------|-----------|
-| ![Dashboard](screenshots/dashboard.png) | ![Orders](screenshots/orders.png) |
+| Login | Dashboard |
+|-----------|-------|
+| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
 
-| Clients | Devices |
-|---------|--------|
-| ![Clients](screenshots/clients.png) | ![Devices](screenshots/devices.png) |
+| Orders | Clients |
+|-----------|---------|
+| ![Orders](screenshots/orders.png) | ![Clients](screenshots/clients.png) |
 
-| Parts Search | |
-|-------------|--|
-| ![Parts](screenshots/parts.png) | |
+| Devices | Parts Search | |
+|--------|-------------|--|
+| ![Devices](screenshots/devices.png) | ![Parts](screenshots/parts.png) | |
 
 ---
 
