@@ -7,8 +7,8 @@
 ![H2](https://img.shields.io/badge/H2_Database-✓-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 
-**RepairDesk** — веб-приложение для управления заказами на ремонт электроники.  
-Помогает сервисным инженерам вести клиентскую базу, каталог устройств и заказы на ремонт в едином интерфейсе.
+**RepairDesk** is a web application for managing electronics repair orders.
+It helps service engineers manage their customer database, device catalog, and repair orders in a single interface.
 
 ---
 
@@ -42,52 +42,51 @@ password: demo
 
 ## ✨ Features
 
-- **Аутентификация** — регистрация и авторизация через Spring Security с BCrypt
-- **Клиенты** — создание, редактирование, удаление клиентской базы
-- **Устройства** — каталог техники по бренду, модели и типу
-- **Заказы** — полный цикл ремонта: диагностика, согласование, стоимость, статус
-- **Дашборд** — сводная статистика с последними заказами
-- **Курс валют** — актуальный курс USD/EUR с API ПриватБанка, обновляется автоматически
-- **Двойная валюта** — цены в заказах отображаются в гривнах и долларах одновременно
-- **Поиск запчастей** — парсинг актуальных цен и наличия с [aks.ua](https://www.aks.ua) (Jsoup)
-- **Мультиязычность** — интерфейс на украинском, русском и английском (i18n, cookie)
-
+- **Authentication** — registration and authorization via Spring Security with BCrypt
+- **Clients** — creating, editing, and deleting a client database
+- **Devices** — cataloging equipment by brand, model, and type
+- **Orders** — full repair cycle: diagnostics, approval, cost, status
+- **Dashboard** — summary statistics with recent orders
+- **Exchange Rate** — current USD/EUR exchange rate from PrivatBank API, updated automatically
+- **Dual Currency** — order prices are displayed in both hryvnia and dollars
+- **Parts Search** — parsing current prices and availability from [aks.ua](https://www.aks.ua) (Jsoup)
+- **Multilingual** — interface in Ukrainian, Russian, and English (i18n, cookies)
 ---
 
 ## 🛠 Tech Stack
 
 ### Backend
-| Технология | Версия | Описание |
-|-----------|--------|----------|
-| Java | 21 | Основной язык |
-| Spring Boot | 4.0.3 | Фреймворк приложения |
-| Spring MVC | — | Обработка HTTP запросов |
-| Spring Security | 7.x | Аутентификация и авторизация |
-| Spring Data JPA | — | Работа с базой данных |
+| Technology | Version | Description |
+|-----------|----------|
+| Java | 21 | Primary Language |
+| Spring Boot | 4.0.3 | Application Framework |
+| Spring MVC | — | HTTP Request Handling |
+| Spring Security | 7.x | Authentication and Authorization |
+| Spring Data JPA | — | Database Access |
 | Hibernate | — | ORM |
-| Jsoup | 1.17.2 | HTML парсинг (aks.ua) |
-| Lombok | — | Снижение boilerplate-кода |
-| Jackson | 3.x | JSON сериализация |
+| Jsoup | 1.17.2 | HTML Parsing (aks.ua) |
+| Lombok | — | Boilerplate Code Reduction |
+| Jackson | 3.x | JSON Serialization |
 
 ### Frontend
-| Технология | Описание |
+| Technology | Description |
 |-----------|----------|
-| Thymeleaf 3.1 | Серверный шаблонизатор |
-| HTML5 / CSS3 | Вёрстка |
-| IBM Plex Sans / Mono | Основная типографика |
-| Rajdhani | Заголовки и числа |
+| Thymeleaf 3.1 | Server-side templating engine |
+| HTML5 / CSS3 | Layout |
+| IBM Plex Sans / Mono | Primary typography |
+| Rajdhani | Headings and numbers |
 
 ### Database & Tools
-| Инструмент | Описание |
+| Tool | Description |
 |-----------|----------|
-| H2 Database | Встроенная in-memory БД |
-| Maven | Сборка проекта |
+| H2 Database | Embedded in-memory database |
+| Maven | Project build |
 
 ---
 
 ## 🏗 Architecture
 
-Классическая трёхслойная архитектура Spring Boot:
+Spring Boot's classic three-layer architecture:
 
 ```
 HTTP Request
@@ -102,7 +101,7 @@ Repository  (JpaRepository)
 H2 Database
 ```
 
-### Структура проекта
+### Project structure
 
 ```
 src/main/java/com/Vlad/RepairDesk/
@@ -111,14 +110,14 @@ src/main/java/com/Vlad/RepairDesk/
 │   └── LocaleConfig.java            # i18n + CookieLocaleResolver
 ├── controller/
 │   ├── ViewController.java          # dashboard, clients, orders, parts...
-│   └── AuthController.java          # регистрация / логин
+│   └── AuthController.java          # registration / login
 ├── service/
 │   ├── ClientService.java
 │   ├── DeviceService.java
 │   ├── RepairOrderService.java
 │   ├── CurrentUserService.java
-│   ├── ExchangeRateService.java     # API ПриватБанка
-│   └── AksParserService.java        # парсинг aks.ua
+│   ├── ExchangeRateService.java     # PrivatBank API
+│   └── AksParserService.java        # parsing aks.ua
 ├── repository/
 │   ├── ClientRepository.java
 │   ├── DeviceRepository.java
@@ -135,12 +134,12 @@ src/main/java/com/Vlad/RepairDesk/
 
 src/main/resources/
 ├── templates/
-│   ├── layout.html                  # базовый layout с сайдбаром
+│   ├── layout.html                  # basic layout with sidebar
 │   ├── dashboard.html
 │   ├── clients.html
 │   ├── devices.html
 │   ├── orders.html
-│   ├── parts_search.html            # поиск запчастей
+│   ├── parts_search.html            # search for spare parts
 │   ├── login.html
 │   ├── index.html
 │   └── create_*/edit_* ...
@@ -154,54 +153,54 @@ src/main/resources/
 
 ## 🚀 Getting Started
 
-### 1. Клонировать репозиторий
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/username/RepairDesk.git
 cd RepairDesk
 ```
 
-### 2. Запустить приложение
+### 2. Launch the application
 
 ```bash
 mvn spring-boot:run
 ```
 
-Приложение запустится на **http://localhost:8080**
+The application will launch on **http://localhost:8080**
 
-### 3. Зарегистрироваться
+### 3. Register
 
-Перейди на `/login`, переключись на вкладку **Register** и создай аккаунт.
+Go to `/login`, switch to the **Register** tab and create an account.
 
 ---
 
 ## 🗄 Database
 
-Используется встроенная **H2 in-memory** БД — ничего устанавливать не нужно.
+The built-in **H2 in-memory** database is used—no installation required.
 
-Консоль доступна по адресу: **http://localhost:8080/h2-console**
+The console is available at:**http://localhost:8080/h2-console**
 
 ```
 JDBC URL:  jdbc:h2:mem:repairdesk
 User:      sa
-Password:  (пусто)
+Password:  (empty)
 ```
 
-> ⚠️ Данные сбрасываются при перезапуске. Для постоянного хранения необходимо заменить H2.
+> ⚠️ Data is lost upon reboot. For permanent storage, replace the H2.
 
 ---
 
 ## 🔌 External Integrations
 
-### ПриватБанк API — курс валют
-Автоматически подтягивает актуальный курс USD/EUR на дашборд и в страницу заказов.
+### PrivatBank API — Exchange Rates
+Automatically pulls the current USD/EUR exchange rate to the dashboard and order page.
 ```
 GET https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5
 ```
-Если API недоступен — используются fallback-значения, приложение не падает.
+If the API is unavailable, fallback values ​​are used and the application does not crash..
 
-### aks.ua — парсинг запчастей (Jsoup)
-Страница поиска запчастей парсит название, цену (текущую и старую) и статус наличия товара в реальном времени.
+### aks.ua — Spare parts parsing (Jsoup)
+The spare parts search page parses the name, price (current and previous), and availability status of the product in real time.
 ```
 GET https://www.aks.ua/uk/search?for={query}
 ```
@@ -210,16 +209,16 @@ GET https://www.aks.ua/uk/search?for={query}
 
 ## 🔒 Security
 
-- Все страницы защищены — неавторизованные пользователи редиректятся на `/login`
-- Пароли хешируются через **BCrypt**
-- Каждый пользователь видит только **свои** данные (multi-tenant через `user_id`)
-- CSRF-защита включена (отключена для H2 Console в dev-режиме)
+- All pages are protected - unauthorized users are redirected to /login
+- Passwords are hashed using BCrypt
+- Each user sees only their own data (multi-tenant via user_id)
+- CSRF protection is enabled (disabled for H2 Console in dev mode)
 
 ---
 
 ## 🌍 Internationalization
 
-Язык интерфейса сохраняется в cookie и меняется одним кликом прямо в сайдбаре.
+The interface language is saved in a cookie and can be changed with one click directly in the sidebar.
 
 | Код | Язык |
 |-----|------|
@@ -232,25 +231,25 @@ GET https://www.aks.ua/uk/search?for={query}
 ## 📦 Deployment
 
 ```bash
-# Сборка исполняемого JAR
+# Building an executable JAR
 mvn clean package -DskipTests
 
-# Запуск
+# Launch
 java -jar target/RepairDesk-0.0.1-SNAPSHOT.jar
 ```
 
-Поддерживаемые платформы: **Railway**, **Render**, **VPS**, **Docker**
+Supported platforms: **Railway**, **Render**, **VPS**, **Docker**
 
 ---
 
 ## 🗺 Roadmap
 
-- [ ] Роли пользователей (admin / technician)
-- [ ] Поиск и фильтрация по клиентам и заказам
-- [ ] Экспорт заказов в PDF / Excel
-- [ ] Email-уведомления о смене статуса ремонта
-- [ ] История изменений заказа
-- [ ] PostgreSQL для production-деплоя
+- [ ] User roles (admin / technician)
+- [ ] Search and filter by clients and orders
+- [ ] Export orders to PDF / Excel
+- [ ] Email notifications about repair status changes
+- [ ] Order change history
+- [ ] PostgreSQL for production deployment
 
 ---
 
